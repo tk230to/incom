@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <b-navbar toggleable="lg" type="dark" class="indigo" :class="{'fixed-top': scrollY > 100}">
+      <b-navbar toggleable="lg" type="dark" class="indigo fixed-top">
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-navbar-brand to="/">ロゴ</b-navbar-brand>
@@ -12,6 +12,7 @@
             <b-nav-item active-class="active" to="/rental">レンタルする</b-nav-item>
             <b-nav-item active-class="active" to="/buy">購入する</b-nav-item>
             <b-nav-item active-class="active" to="/item">商品管理</b-nav-item>
+            <b-nav-item active-class="active" to="/customer">顧客管理</b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
@@ -29,7 +30,7 @@
             </b-nav-item>
             <b-nav-item active-class="active" to="/cart">
               <i class="fas fa-shopping-cart"></i>
-              <span class="badge badge-danger rounded-circle ml-1">{{this.getCartItemCount}}</span>
+              <span v-if="this.getCartItemCount !== 0" class="badge badge-danger rounded-circle ml-1">{{this.getCartItemCount}}</span>
             </b-nav-item>
             <b-nav-item active-class="active" to="/contact">
               <i class="fas fa-question-circle"></i> 問合せ
@@ -62,37 +63,18 @@ import firebase from "firebase/app";
 import "./assets/main.css";
 
 export default {
-  // **************************************************************************
-  // * 初期処理
-  // **************************************************************************
-  mounted() {
-    window.addEventListener("scroll", this.onScroll);
-  },
-
-  // **************************************************************************
-  // * 終了処理
-  // **************************************************************************
-  destroyed() {
-    window.removeEventListener("scroll", this.onScroll);
-  },
 
   // **************************************************************************
   // * メソッド
   // **************************************************************************
   methods: {
-    // ========================================================================
-    // スクロール時処理
-    // ========================================================================
-    onScroll() {
-      this.scrollY = window.scrollY;
-    },
 
     // ========================================================================
     // ログオフ
     // ========================================================================
     logoff: function() {
       firebase.auth().signOut();
-      this.customer = {}
+      this.user = {}
       this.$router.push("/login");
     },
 
@@ -111,15 +93,6 @@ export default {
   },
 
   // **************************************************************************
-  // * データ
-  // **************************************************************************
-  data: function() {
-    return {
-      scrollY: 0
-    };
-  },
-
-  // **************************************************************************
   // * 算出プロパティ
   // **************************************************************************
   computed: {
@@ -127,12 +100,12 @@ export default {
     // ========================================================================
     // 顧客
     // ========================================================================
-    customer: {
+    user: {
       get () {
-        return this.$store.state.customer
+        return this.$store.state.user
       },
       set (value) {
-        this.$store.commit('setCustomer', value)
+        this.$store.commit('setUser', value)
       }
     },
 
@@ -140,11 +113,16 @@ export default {
     // カート内商品数取得
     // ========================================================================
     getCartItemCount: function() {
-      if (this.customer.cartItems) {
-        return this.customer.cartItems.length;
+      if (this.user.cartItems) {
+        return this.user.cartItems.length;
       }
       return 0
     },
   },
 };
 </script>
+<style>
+main {
+  margin-top: 60px;
+}
+</style>

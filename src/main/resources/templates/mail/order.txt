@@ -1,0 +1,8 @@
+[(${salesOrder.customer.name})] 様
+
+ご注文いただきありがとうございます。
+
+★ご注文内容
+[# th:each="salesOrderDetail : ${salesOrder.salesOrderDetails}"]
+  [(${salesOrderDetail.item.name})]
+[/]

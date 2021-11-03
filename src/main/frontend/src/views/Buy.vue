@@ -9,12 +9,12 @@
           <img :src="getImageSrc(cartItem.item.image)">
           <div class="card-body">
             <h5 class="card-title">{{cartItem.item.name}}</h5>
-            <p class="card-text">￥{{cartItem.item.price.toLocaleString()}}</p>
+            <p class="card-text">￥{{cartItem.item.itemType.specialPrice.toLocaleString()}}</p>
             <div class="form-inline">
               <label>数量</label>
               <input class="form-control" type="number" v-model.number="cartItem.quantity" />
             </div>
-            <button @click="addCart(cartItem)" class="btn btn-primary d-block mx-auto m-2 px-3 py-2">カートに入れる</button>
+            <button @click="addCart(cartItem)" class="btn btn-primary d-block mx-auto m-2 px-3 py-2" :disabled="cartItem.quantity <= 0">カートに入れる</button>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@ import axios from 'axios';
 export default {
   mounted: function() {
     this.getItems()
-    this.getCustomer()
+    this.getUser()
   },
 
   // **************************************************************************
@@ -48,12 +48,12 @@ export default {
     // ========================================================================
     // 顧客
     // ========================================================================
-    customer: {
+    user: {
       get () {
-        return this.$store.state.customer
+        return this.$store.state.user
       },
       set (value) {
-        this.$store.commit('setCustomer', value)
+        this.$store.commit('setUser', value)
       }
     },
   },
@@ -71,9 +71,9 @@ export default {
       this.mergeCart(addCartItem)
 
       // HTTPリクエスト送信
-      await axios.post('/api/open/customers/', this.customer)
+      await axios.post('customers/', this.user)
       .then(response => {
-        this.customer = response.data
+        this.user = response.data
       })
     },
 
@@ -82,13 +82,13 @@ export default {
     // ========================================================================
     mergeCart: function(addCartItem) {
 
-      let cartItem = this.customer.cartItems.find((cartItem) => cartItem.item.id === addCartItem.item.id)
+      let cartItem = this.user.cartItems.find((cartItem) => cartItem.item.id === addCartItem.item.id)
       if (cartItem) {
         cartItem.quantity += addCartItem.quantity
         return
       }
 
-      this.customer.cartItems.push(addCartItem);
+      this.user.cartItems.push(addCartItem);
     },
 
     // ========================================================================
@@ -96,7 +96,7 @@ export default {
     // ========================================================================
     getItems: async function() {
       let items
-      await axios.get('/api/open/items/')
+      await axios.get('items/')
       .then(function (response) {
         items = response.data
       })

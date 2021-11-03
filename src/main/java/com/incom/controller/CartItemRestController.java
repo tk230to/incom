@@ -11,7 +11,7 @@ import com.incom.model.CartItemRepository;
  * カート商品コントローラクラス。
  */
 @RestController
-@RequestMapping("/api/open/cartitems")
+@RequestMapping("/cartitems")
 public class CartItemRestController extends BaseRestController<CartItemRepository, CartItem, Long> {
 
     @Autowired

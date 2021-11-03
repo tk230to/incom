@@ -15,7 +15,7 @@ import com.incom.model.CustomerRepository;
  * 顧客画面のコントローラクラス。
  */
 @RestController
-@RequestMapping("/api/open/customers")
+@RequestMapping("/customers")
 public class CustomerRestController extends BaseRestController<CustomerRepository, Customer, String> {
 
     @Autowired

@@ -6,9 +6,19 @@ import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
 import Buy from '@/views/Buy.vue'
 import Cart from '@/views/Cart.vue'
+import Order from '@/views/Order.vue'
 import Item from '@/views/item/ItemList.vue'
 import ItemCreate from '@/views/item/ItemCreate.vue'
 import ItemUpdate from '@/views/item/ItemUpdate.vue'
+import ItemType from '@/views/item/ItemTypeList.vue'
+import ItemTypeCreate from '@/views/item/ItemTypeCreate.vue'
+import ItemTypeUpdate from '@/views/item/ItemTypeUpdate.vue'
+import Customer from '@/views/customer/CustomerList.vue'
+import CustomerCreate from '@/views/customer/CustomerCreate.vue'
+import CustomerUpdate from '@/views/customer/CustomerUpdate.vue'
+import CustomerSpecialPrice from '@/views/customer/CustomerSpecialPrice.vue'
+import AddressCreate from '@/views/address/AddressCreate.vue'
+import AddressUpdate from '@/views/address/AddressUpdate.vue'
 import Login from '@/views/Login.vue'
 import MyPage from '@/views/MyPage.vue'
 import Rental from '@/views/Rental.vue'
@@ -41,6 +51,11 @@ const routes = [
     component: Cart
   },
   {
+    path: '/order',
+    name: 'Order',
+    component: Order
+  },
+  {
     path: '/item',
     name: 'Item',
     component: Item
@@ -54,6 +69,51 @@ const routes = [
     path: '/item/update/:id',
     name: 'ItemUpdate',
     component: ItemUpdate
+  },
+  {
+    path: '/itemType',
+    name: 'ItemType',
+    component: ItemType
+  },
+  {
+    path: '/itemType/create',
+    name: 'ItemTypeCreate',
+    component: ItemTypeCreate
+  },
+  {
+    path: '/itemType/update/:id',
+    name: 'ItemTypeUpdate',
+    component: ItemTypeUpdate
+  },
+  {
+    path: '/customer',
+    name: 'Customer',
+    component: Customer
+  },
+  {
+    path: '/customer/create',
+    name: 'CustomerCreate',
+    component: CustomerCreate
+  },
+  {
+    path: '/customer/update/:id',
+    name: 'CustomerUpdate',
+    component: CustomerUpdate
+  },
+  {
+    path: '/customer/specialPrice/:id',
+    name: 'CustomerSpecialPrice',
+    component: CustomerSpecialPrice
+  },
+  {
+    path: '/address/create',
+    name: 'AddressCreate',
+    component: AddressCreate
+  },
+  {
+    path: '/address/update/:id',
+    name: 'AddressUpdate',
+    component: AddressUpdate
   },
   {
     path: '/signup',
@@ -96,7 +156,14 @@ const routes = [
 const router = new VueRouter({
   mode: 'hash',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
 
 // ========================================================================
@@ -113,17 +180,24 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // 認証要の場合
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      next()
-    } else {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
-    }
-  })
+  // 未ログインの場合
+  if (!firebase.auth().currentUser) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+    return
+  }
+
+  // ゲストログインの場合
+  if (firebase.auth().currentUser.isAnonymous) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+    return
+  }
+  next()
 })
 
 export default router

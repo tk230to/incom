@@ -1,13 +1,13 @@
 <template>
 <div class="container">
-  <ItemBase title="商品登録画面" :item="item" :errors="errors"></ItemBase>
+  <AddressBase title="納品先住所登録画面" :address="address" :errors="errors"></AddressBase>
 
   <div class="row">
     <div class="col-sm-6">
-      <router-link class="btn btn-primary" to="/item">戻る</router-link>
+      <button class="btn btn-primary" @click="$router.back()">戻る</button>
     </div>
     <div class="col-sm-6 text-right">
-      <button class="btn btn-primary" @click="createItem()">登録</button>
+      <button class="btn btn-primary" @click="createAddress()">登録</button>
     </div>
   </div>
 </div>
@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import ItemBase from './ItemBase'
+import AddressBase from './AddressBase'
 
 export default {
 
@@ -24,9 +24,7 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      item: {
-        itemType: {},
-      },
+      address: {},
       errors: null
     }
   },
@@ -35,7 +33,26 @@ export default {
   // * コンポーネント
   // **************************************************************************
   components: {
-    ItemBase
+    AddressBase
+  },
+
+
+  // **************************************************************************
+  // * 算出プロパティ
+  // **************************************************************************
+  computed: {
+
+    // ========================================================================
+    // 顧客
+    // ========================================================================
+    user: {
+      get () {
+        return this.$store.state.user
+      },
+      set (value) {
+        this.$store.commit('setUser', value)
+      }
+    },
   },
 
   // **************************************************************************
@@ -44,15 +61,16 @@ export default {
   methods: {
 
     // ========================================================================
-    // 商品登録
+    // 納品先住所登録
     // ========================================================================
-    createItem: async function() {
+    createAddress: async function() {
 
       // HTTPリクエスト送信
-      await axios.post('/items/', this.item)
+      this.address.customer = this.user
+      await axios.post('/addresses/', this.address)
       .then(response => {
-        this.item = response.data
-        this.$router.push('/item')
+        this.address = response.data
+        this.$router.back()
       })
 
       .catch(error => {

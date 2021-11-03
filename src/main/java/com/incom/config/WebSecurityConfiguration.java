@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.incom.model.CustomerRepository;
 import com.incom.security.FirebaseAuthenticationFilter;
 import com.incom.security.Role;
 
@@ -25,8 +26,9 @@ import com.incom.security.Role;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /** 顧客リポジトリ */
     @Autowired
-    private FirebaseAuthenticationFilter firebaseAuthenticationFilter;
+    CustomerRepository customerRepository;
 
     @Value(value = "${app.allowedOrigin}")
     private String allowedOrigin;
@@ -45,15 +47,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.authorizeRequests().antMatchers("/api/open/**").permitAll();
-        httpSecurity.authorizeRequests().antMatchers("/api/client/**").hasRole(Role.USER);
-        httpSecurity.authorizeRequests().antMatchers("/api/admin/**").hasAnyRole(Role.ADMIN);
         httpSecurity.authorizeRequests().antMatchers("/health/**").hasAnyRole(Role.ADMIN);
         httpSecurity.authorizeRequests().antMatchers("/**").permitAll();
         httpSecurity.authorizeRequests().and().csrf().disable();
 
         // Firebase認証フィルタを登録
-        httpSecurity.addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new FirebaseAuthenticationFilter(customerRepository),
+                UsernamePasswordAuthenticationFilter.class);
 
         // CORS
         httpSecurity.cors();

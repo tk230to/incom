@@ -9,7 +9,7 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">メールアドレス <span class="badge badge-danger">必須</span></label>
       <div class="col-sm-10">
-        <input type="email" class="form-control" :class="{ 'is-invalid' : getErrorMessage('email') }" v-model="customer.email">
+        <input type="email" class="form-control" :class="{ 'is-invalid' : getErrorMessage('email') }" v-model="user.email">
         <div :class="{ 'invalid-feedback' : getErrorMessage('email') }">{{getErrorMessage('email')}}</div>
       </div>
     </div>
@@ -17,7 +17,7 @@
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">パスワード <span class="badge badge-danger">必須</span></label>
       <div class="col-sm-10">
-        <input type="password" class="form-control" :class="{ 'is-invalid' : getErrorMessage('password') }" v-model="customer.password">
+        <input type="password" class="form-control" :class="{ 'is-invalid' : getErrorMessage('password') }" v-model="user.password">
         <div :class="{ 'invalid-feedback' : getErrorMessage('password') }">{{getErrorMessage('password')}}</div>
       </div>
     </div>
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import firebase from 'firebase/app';
 require("firebaseui-ja/dist/firebaseui.css");
 
@@ -76,14 +75,14 @@ export default {
   computed: {
 
     // ========================================================================
-    // 顧客
+    // ユーザ
     // ========================================================================
-    customer: {
+    user: {
       get () {
-        return this.$store.state.customer
+        return this.$store.state.user
       },
       set (value) {
-        this.$store.commit('setCustomer', value)
+        this.$store.commit('setUser', value)
       }
     },
   },
@@ -99,18 +98,9 @@ export default {
     login: async function() {
 
       // メールアドレスとパスワードを使って認証
-      firebase.auth().signInWithEmailAndPassword(this.customer.email, this.customer.password)
-      .then(async (userCredential) => {
-
-        let customer = await this.getCustomer()
-        if (!customer.id) {
-          this.customer.id = userCredential.user.uid
-          this.customer.name = userCredential.user.displayName
-          this.customer.email = userCredential.user.email
-          this.createCustomer()
-        }
-
-        // 認証後のページに遷移
+      firebase.auth().signInWithEmailAndPassword(this.user.email, this.user.password)
+      .then(async () => {
+        await this.getUser()
         this.$router.push('/')
       })
 
@@ -127,17 +117,8 @@ export default {
 
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider)
-      .then(async (userCredential) => {
-
-        let customer = await this.getCustomer()
-        if (!customer.id) {
-          this.customer.id = userCredential.user.uid
-          this.customer.name = userCredential.user.displayName
-          this.customer.email = userCredential.user.email
-          this.createCustomer()
-        }
-
-        // 認証後のページに遷移
+      .then(async () => {
+        await this.getUser()
         this.$router.push('/')
       })
 
@@ -145,22 +126,6 @@ export default {
         this.error = error
         console.log(error.message);
       });
-    },
-
-    // ========================================================================
-    // ユーザ登録
-    // ========================================================================
-    createCustomer: async function() {
-
-      // HTTPリクエスト送信
-      await axios.post('/api/open/customers/', this.customer)
-      .then(response => {
-        this.customer = response.data
-      })
-
-      .catch(error => {
-        this.errors = error.response.data.errors
-      })
     },
   },
 };

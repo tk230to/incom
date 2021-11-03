@@ -2,10 +2,9 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <h1>商品管理</h1>
+        <h1>商品種別管理</h1>
 
-        <router-link class="btn btn-primary" to="/item/create">新規登録</router-link>
-        <router-link class="btn btn-primary" to="/itemType">商品種別管理</router-link>
+        <router-link class="btn btn-primary" to="/itemType/create">新規登録</router-link>
 
         <table class="table table-bordered table-hover">
           <thead class="thead-dark">
@@ -16,10 +15,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in this.items" :key="index">
-              <td>{{item.id}}</td>
-              <td><router-link :to="{name: 'ItemUpdate', params: {id: item.id}}">{{item.name}}</router-link></td>
-              <td><a @click="deleteItem(item.id)"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a></td>
+            <tr v-for="(itemType, index) in this.itemTypes" :key="index">
+              <td>{{itemType.id}}</td>
+              <td><router-link :to="{name: 'ItemTypeUpdate', params: {id: itemType.id}}">{{itemType.name}}</router-link></td>
+              <td><a @click="deleteItemType(itemType.id)"><i class="far fa-trash-alt fa-lg" aria-hidden="true"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -37,7 +36,7 @@ export default {
   // * 表示前処理
   // **************************************************************************
   mounted: function() {
-    this.getItems()
+    this.getItemTypes()
   },
 
   // **************************************************************************
@@ -45,7 +44,7 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      items: []
+      itemTypes: []
     }
   },
 
@@ -55,26 +54,26 @@ export default {
   methods: {
 
     // ========================================================================
-    // 商品取得
+    // 商品種別取得
     // ========================================================================
-    getItems: async function() {
-      let items
-      await axios.get('/items/')
+    getItemTypes: async function() {
+      let itemTypes
+      await axios.get('/itemTypes/')
       .then(function (response) {
-        items = response.data
+        itemTypes = response.data
       })
-      this.items = items
+      this.itemTypes = itemTypes
     },
 
     // ========================================================================
-    // 商品削除
+    // 商品種別削除
     // ========================================================================
-    deleteItem: async function(id) {
+    deleteItemType: async function(id) {
 
-      await axios.delete('/items/' + id)
+      await axios.delete('/itemTypes/' + id)
       .then(response => {
         console.log(response)
-        this.getItems()
+        this.getItemTypes()
       })
 
       .catch(error => {

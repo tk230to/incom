@@ -7,21 +7,28 @@
     </div>
 
     <div class="form-group row">
-      <div v-for="(cartItem, index) in this.customer.cartItems" class="col-lg-4 col-md-6" :key="index">
+      <div v-for="(cartItem, index) in this.user.cartItems" class="col-lg-4 col-md-6" :key="index">
         <div class="card" style="width: 18rem;">
-          <img :src="getImageSrc(cartItem.item.image)">
+          <img class="card-img" :src="getImageSrc(cartItem.item.image)">
           <div class="card-body">
             <h5 class="card-title">{{cartItem.item.name}}</h5>
-            <p class="card-text">￥{{cartItem.item.price.toLocaleString()}}</p>
+            <p class="card-text">￥{{cartItem.item.itemType.specialPrice.toLocaleString()}}</p>
             <div class="form-inline">
               <label>数量</label>
-              <input class="form-control" type="number" v-model.number="cartItem.quantity" />
+              <input @change="updateItem(index)" class="form-control" type="number" min="1" v-model.number="cartItem.quantity" />
             </div>
-            <button @click="deleteItem(index)" class="btn btn-secondary d-block mx-auto m-2 px-3 py-2">削除</button>
+            <button @click="deleteItem(cartItem.id)" class="btn btn-secondary d-block mx-auto m-2 px-3 py-2">削除</button>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <router-link class="btn btn-primary" to="/order">ご注文に進む</router-link>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -38,20 +45,20 @@ export default {
     // ========================================================================
     // 顧客
     // ========================================================================
-    customer: {
+    user: {
       get () {
-        return this.$store.state.customer
+        return this.$store.state.user
       },
       set (value) {
-        this.$store.commit('setCustomer', value)
+        this.$store.commit('setUser', value)
       }
     },
 
     subtotalPrice: function() {
       let subtotal = 0
-      if (this.customer.cartItems) {
-        for (let cartItem of this.customer.cartItems) {
-          subtotal = subtotal + cartItem.item.price * cartItem.quantity
+      if (this.user.cartItems) {
+        for (let cartItem of this.user.cartItems) {
+          subtotal = subtotal + cartItem.item.itemType.specialPrice * cartItem.quantity
         }
       }
       return subtotal
@@ -66,11 +73,29 @@ export default {
     // ========================================================================
     // カート商品削除
     // ========================================================================
-    deleteItem: async function(index) {
-      await axios.delete('/api/open/cartitems/' + this.customer.cartItems[index].id)
+    deleteItem: async function(id) {
+      await axios.delete('/cartitems/' + id)
       .then(response => {
         console.log(response)
-        this.getCustomer()
+        this.getUser()
+      })
+
+      .catch(error => {
+        this.errors = error.response.data.errors
+      })
+    },
+
+    // ========================================================================
+    // カート商品更新
+    // ========================================================================
+    updateItem: async function(index) {
+      let cartItem = this.user.cartItems[index]
+      cartItem.customer = {}
+      cartItem.customer.id = this.user.id
+      await axios.put('/cartitems/' + cartItem.id, cartItem)
+      .then(response => {
+        console.log(response)
+        this.getUser()
       })
 
       .catch(error => {
@@ -81,7 +106,7 @@ export default {
 };
 </script>
 <style>
-img {
+img.card-img {
   width: 17rem;
   height: 17rem;
   object-fit: contain;

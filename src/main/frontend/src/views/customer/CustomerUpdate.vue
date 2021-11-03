@@ -1,13 +1,13 @@
 <template>
 <div class="container">
-  <ItemBase title="商品更新画面" :item="item" :errors="errors"></ItemBase>
+  <CustomerBase title="顧客更新画面" :customer="customer" :errors="errors"></CustomerBase>
 
   <div class="row">
     <div class="col-sm-6">
-      <router-link class="btn btn-primary" to="/item">戻る</router-link>
+      <router-link class="btn btn-primary" to="/customer">戻る</router-link>
     </div>
     <div class="col-sm-6 text-right">
-      <button class="btn btn-primary" @click="updateItem()">更新</button>
+      <button class="btn btn-primary" @click="updateCustomer()">更新</button>
     </div>
   </div>
 </div>
@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import ItemBase from './ItemBase'
+import CustomerBase from './CustomerBase'
 
 export default {
 
@@ -23,7 +23,7 @@ export default {
     // * 表示前処理
     // **************************************************************************
     mounted: function() {
-      this.getItem()
+      this.getCustomer()
     },
 
     // **************************************************************************
@@ -31,9 +31,7 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      item: {
-        itemType: {},
-      },
+      customer: {},
       errors: null
     }
   },
@@ -42,7 +40,7 @@ export default {
   // * コンポーネント
   // **************************************************************************
   components: {
-    ItemBase
+    CustomerBase
   },
 
   // **************************************************************************
@@ -51,30 +49,30 @@ export default {
   methods: {
 
     // ========================================================================
-    // 商品取得
+    // 顧客取得
     // ========================================================================
-    getItem: async function() {
+    getCustomer: async function() {
 
       // HTTPリクエスト送信
-      let item
-      await axios.get('/items/' + this.$route.params.id)
+      let customer
+      await axios.get('/customers/' + this.$route.params.id)
       .then(function (response) {
-        item = response.data
+        customer = response.data
       })
 
-      this.item = item
+      this.customer = customer
     },
 
     // ========================================================================
-    // 商品更新
+    // 顧客更新
     // ========================================================================
-    updateItem: async function() {
+    updateCustomer: async function() {
 
       // HTTPリクエスト送信
-      await axios.put('/items/' + this.item.id, this.item)
+      await axios.put('/customers/' + this.customer.id, this.customer)
       .then(response => {
-        this.item = response.data
-        this.$router.push('/item')
+        this.customer = response.data
+        this.$router.push('/customer')
       })
 
       .catch(error => {

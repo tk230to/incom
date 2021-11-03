@@ -5,9 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -23,6 +25,7 @@ public class CartItem {
 
     /** 顧客 */
     @ManyToOne
+    @EqualsAndHashCode.Exclude
     private Customer customer;
 
     /** 商品 */
@@ -30,5 +33,6 @@ public class CartItem {
     private Item item;
 
     /** 数量 */
+    @Min(1)
     private Long quantity;
 }

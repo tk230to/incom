@@ -13,6 +13,7 @@
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.5",
     "firebase": "^7.15.1",
+    "firebase-admin": "^9.9.0",
     "firebaseui": "^4.8.0",
     "firebaseui-ja": "^1.0.0",
     "jquery": "^3.5.1",

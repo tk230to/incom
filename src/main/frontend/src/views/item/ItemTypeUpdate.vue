@@ -1,13 +1,13 @@
 <template>
 <div class="container">
-  <ItemBase title="商品更新画面" :item="item" :errors="errors"></ItemBase>
+  <ItemTypeBase title="商品種別更新画面" :itemType="itemType" :errors="errors"></ItemTypeBase>
 
   <div class="row">
     <div class="col-sm-6">
-      <router-link class="btn btn-primary" to="/item">戻る</router-link>
+      <router-link class="btn btn-primary" to="/itemType">戻る</router-link>
     </div>
     <div class="col-sm-6 text-right">
-      <button class="btn btn-primary" @click="updateItem()">更新</button>
+      <button class="btn btn-primary" @click="updateItemType()">更新</button>
     </div>
   </div>
 </div>
@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import ItemBase from './ItemBase'
+import ItemTypeBase from './ItemTypeBase'
 
 export default {
 
@@ -23,7 +23,7 @@ export default {
     // * 表示前処理
     // **************************************************************************
     mounted: function() {
-      this.getItem()
+      this.getItemType()
     },
 
     // **************************************************************************
@@ -31,9 +31,7 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      item: {
-        itemType: {},
-      },
+      itemType: {},
       errors: null
     }
   },
@@ -42,7 +40,7 @@ export default {
   // * コンポーネント
   // **************************************************************************
   components: {
-    ItemBase
+    ItemTypeBase
   },
 
   // **************************************************************************
@@ -51,30 +49,30 @@ export default {
   methods: {
 
     // ========================================================================
-    // 商品取得
+    // 商品種別取得
     // ========================================================================
-    getItem: async function() {
+    getItemType: async function() {
 
       // HTTPリクエスト送信
-      let item
-      await axios.get('/items/' + this.$route.params.id)
+      let itemType
+      await axios.get('/itemTypes/' + this.$route.params.id)
       .then(function (response) {
-        item = response.data
+        itemType = response.data
       })
 
-      this.item = item
+      this.itemType = itemType
     },
 
     // ========================================================================
-    // 商品更新
+    // 商品種別更新
     // ========================================================================
-    updateItem: async function() {
+    updateItemType: async function() {
 
       // HTTPリクエスト送信
-      await axios.put('/items/' + this.item.id, this.item)
+      await axios.put('/itemTypes/' + this.itemType.id, this.itemType)
       .then(response => {
-        this.item = response.data
-        this.$router.push('/item')
+        this.itemType = response.data
+        this.$router.push('/itemType')
       })
 
       .catch(error => {

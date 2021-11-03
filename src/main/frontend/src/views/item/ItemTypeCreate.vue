@@ -1,13 +1,13 @@
 <template>
 <div class="container">
-  <ItemBase title="商品登録画面" :item="item" :errors="errors"></ItemBase>
+  <itemTypeBase title="商品種別登録画面" :itemType="itemType" :errors="errors"></itemTypeBase>
 
   <div class="row">
     <div class="col-sm-6">
-      <router-link class="btn btn-primary" to="/item">戻る</router-link>
+      <router-link class="btn btn-primary" to="/itemType">戻る</router-link>
     </div>
     <div class="col-sm-6 text-right">
-      <button class="btn btn-primary" @click="createItem()">登録</button>
+      <button class="btn btn-primary" @click="createItemType()">登録</button>
     </div>
   </div>
 </div>
@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import ItemBase from './ItemBase'
+import ItemTypeBase from './ItemTypeBase'
 
 export default {
 
@@ -24,9 +24,7 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      item: {
-        itemType: {},
-      },
+      itemType: {},
       errors: null
     }
   },
@@ -35,7 +33,7 @@ export default {
   // * コンポーネント
   // **************************************************************************
   components: {
-    ItemBase
+    ItemTypeBase
   },
 
   // **************************************************************************
@@ -44,15 +42,15 @@ export default {
   methods: {
 
     // ========================================================================
-    // 商品登録
+    // 商品種別登録
     // ========================================================================
-    createItem: async function() {
+    createItemType: async function() {
 
       // HTTPリクエスト送信
-      await axios.post('/items/', this.item)
+      await axios.post('/itemTypes/', this.itemType)
       .then(response => {
-        this.item = response.data
-        this.$router.push('/item')
+        this.itemType = response.data
+        this.$router.push('/itemType')
       })
 
       .catch(error => {

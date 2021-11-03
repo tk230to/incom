@@ -5,39 +5,45 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 商品クラス。
+ * 特別価格クラス。
  */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+public class SpecialPrice {
 
     /** ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 名前 */
+    /** 顧客 */
     @NotNull
-    private String name;
-
-    /** 画像 */
-    @NotNull
-    private byte[] image;
-
-    /** 画像種別 */
-    private String imageType;
+    @ManyToOne
+    @EqualsAndHashCode.Exclude
+    private Customer customer;
 
     /** 商品種別 */
+    @NotNull
     @ManyToOne
     private ItemType itemType;
 
+    /** 金額 */
+    @NotNull
+    @Min(1)
+    private Long price;
 }

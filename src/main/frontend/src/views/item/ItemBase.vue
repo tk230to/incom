@@ -10,10 +10,14 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">金額 <span class="badge badge-danger">必須</span></label>
+      <label class="col-sm-2 col-form-label">商品種別 <span class="badge badge-danger">必須</span></label>
       <div class="col-sm-10">
-        <input type="number" class="form-control" :class="{ 'is-invalid' : getErrorMessage('price') }" v-model="item.price">
-        <div :class="{ 'invalid-feedback' : getErrorMessage('price') }">{{getErrorMessage('price')}}</div>
+        <select class="form-control" :class="{ 'is-invalid' : getErrorMessage('price') }" v-model="item.itemType.id">
+          <option v-for = "(itemType, index) in this.itemTypes" :key = "index" :value = "itemType.id">
+            {{itemType.name}}
+          </option>
+        </select>
+        <div :class="{ 'invalid-feedback' : getErrorMessage('price') }">{{getErrorMessage('itemType')}}</div>
       </div>
     </div>
     <div class="form-group row">
@@ -34,14 +38,23 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+
+  // **************************************************************************
+  // * 表示前処理
+  // **************************************************************************
+  mounted: function() {
+    this.getItemTypes()
+  },
 
   // **************************************************************************
   // * データ
   // **************************************************************************
   data: function() {
     return {
+      itemTypes: [],
       file: {
         name: null
       },
@@ -61,6 +74,18 @@ export default {
   // * メソッド
   // **************************************************************************
   methods: {
+
+    // ========================================================================
+    // 商品種別取得
+    // ========================================================================
+    getItemTypes: async function() {
+      let itemTypes
+      await axios.get('/itemTypes/')
+      .then(function (response) {
+        itemTypes = response.data
+      })
+      this.itemTypes = itemTypes
+    },
 
     // ========================================================================
     // 画像ファイルドラッグ＆ドロップ

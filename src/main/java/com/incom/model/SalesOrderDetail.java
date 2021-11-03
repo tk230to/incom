@@ -5,39 +5,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 商品クラス。
- */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class SalesOrderDetail {
 
     /** ID */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 名前 */
-    @NotNull
-    private String name;
-
-    /** 画像 */
-    @NotNull
-    private byte[] image;
-
-    /** 画像種別 */
-    private String imageType;
-
-    /** 商品種別 */
+    /** 注文 */
     @ManyToOne
-    private ItemType itemType;
+    private SalesOrder salesOrder;
 
+    /** 商品 */
+    @ManyToOne
+    private Item item;
+
+    /** 数量 */
+    @Min(1)
+    private Long quantity;
 }

@@ -40,7 +40,7 @@ public abstract class BaseRestController<R extends JpaRepository<T, ID>, T, ID> 
     /**
      * 全件表示。
      *
-     * @return カート情報
+     * @return 検索結果
      */
     @GetMapping
     public ResponseEntity<List<T>> get() {
@@ -50,8 +50,8 @@ public abstract class BaseRestController<R extends JpaRepository<T, ID>, T, ID> 
     /**
      * 1件表示。
      *
-     * @param id カートID
-     * @return カート情報
+     * @param id
+     * @return 検索結果
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<T> getOne(@PathVariable("id") ID id) {
@@ -66,8 +66,8 @@ public abstract class BaseRestController<R extends JpaRepository<T, ID>, T, ID> 
     /**
      * 登録。
      *
-     * @param Cart カート画面入力値
-     * @return カート情報
+     * @param entity リクエスト
+     * @return レスポンス
      * @throws IOException
      */
     @PostMapping
@@ -79,8 +79,8 @@ public abstract class BaseRestController<R extends JpaRepository<T, ID>, T, ID> 
     /**
      * 更新。
      *
-     * @param Cart カート画面入力値
-     * @return カート情報
+     * @param entity リクエスト
+     * @return レスポンス
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<T> update(@PathVariable("id") ID id, @Validated @RequestBody T entity) {
@@ -91,7 +91,7 @@ public abstract class BaseRestController<R extends JpaRepository<T, ID>, T, ID> 
     /**
      * 削除。
      *
-     * @param id カートID
+     * @param id
      * @return 204:No Content
      */
     @DeleteMapping(value = "/{id}")

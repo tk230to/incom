@@ -19,6 +19,18 @@ spring:
       # @Entityに対応するテーブルが無ければ作成
       ddl-auto: create-drop
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tk230to@gmail.com
+    password: ivrvqpsyqalewhht
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 recaptcha:
   validation:
     secret-key: 6LdpQrYZAAAAAOkbIdNvcWb40nVyPYmtPnbv-uU9

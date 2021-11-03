@@ -1,5 +1,5 @@
+import firebase from 'firebase/app';
 import axios from 'axios';
-import store from '../store/index'
 
 export default function setup() {
 
@@ -12,8 +12,12 @@ export default function setup() {
       request.data = await deepClone(request.data)
       await encodeImage(request.data)
 
-      const token = store.state.customer.token;
-      if(token) {
+      let token;
+      if (firebase.auth().currentUser) {
+        token = await firebase.auth().currentUser.getIdToken(true)
+      }
+
+      if (token) {
         request.headers.Authorization = `Bearer ${token}`;
       }
 
@@ -58,8 +62,9 @@ async function encodeImage(data) {
      for (let key in data) {
        if (key === "image") {
          data.image = await base64Encode(data.image)
+       } else {
+         await encodeImage(data[key])
        }
-       await encodeImage(data[key])
      }
    }
   }

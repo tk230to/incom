@@ -10,16 +10,30 @@ export default new Vuex.Store({
   // **************************************************************************
   state: {
 
-    // 顧客
-    customer: {},
+    // ユーザ
+    user: {},
+
+    // 注文
+    salesOrder: {},
+
+    // 顧客リスト
+    customers: {},
   },
 
   // **************************************************************************
   // * mutations
   // **************************************************************************
   mutations: {
-    setCustomer(state, customer) {
-      state.customer = customer
+    setUser(state, user) {
+      state.user = user
+    },
+
+    setSalesOrder(state, salesOrder) {
+      state.salesOrder = salesOrder
+    },
+
+    setCustomers(state, customers) {
+      state.customers = customers
     },
   },
 })
