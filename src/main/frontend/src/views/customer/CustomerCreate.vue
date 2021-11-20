@@ -23,7 +23,9 @@ export default {
   // **************************************************************************
   data: function() {
     return {
-      customer: {},
+      customer: {
+        role: {},
+      },
       errors: null
     }
   },

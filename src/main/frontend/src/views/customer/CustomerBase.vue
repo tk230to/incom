@@ -19,6 +19,18 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label">ロール <span class="badge badge-danger">必須</span></label>
+      <div class="col-sm-10">
+        <select class="form-control" :class="{ 'is-invalid' : getErrorMessage('role') }" v-model="customer.role.id">
+          <option v-for = "(role, index) in this.roles" :key = "index" :value = "role.id">
+            {{role.name}}
+          </option>
+        </select>
+        <div :class="{ 'invalid-feedback' : getErrorMessage('price') }">{{getErrorMessage('itemType')}}</div>
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label">パスワード <span class="badge badge-danger">必須</span></label>
       <div class="col-sm-10">
         <input type="password" class="form-control" :class="{ 'is-invalid' : getErrorMessage('password') }" v-model="customer.password">
@@ -30,17 +42,23 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+
+  // **************************************************************************
+  // * 表示前処理
+  // **************************************************************************
+  mounted: function() {
+    this.getRoles()
+  },
 
   // **************************************************************************
   // * データ
   // **************************************************************************
   data: function() {
     return {
-      file: {
-        name: null
-      },
+      roles: [],
     }
   },
 
@@ -51,6 +69,24 @@ export default {
     title: String,
     customer: Object,
     errors: Array
+  },
+
+  // **************************************************************************
+  // * メソッド
+  // **************************************************************************
+  methods: {
+
+    // ========================================================================
+    // ロール取得
+    // ========================================================================
+    getRoles: async function() {
+      let roles
+      await axios.get('/roles/')
+      .then(function (response) {
+        roles = response.data
+      })
+      this.roles = roles
+    },
   },
 };
 </script>
