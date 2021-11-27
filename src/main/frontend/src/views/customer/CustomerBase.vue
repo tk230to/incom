@@ -19,6 +19,14 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 col-form-label">電話番号</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" :class="{ 'is-invalid' : getErrorMessage('tel') }" v-model="customer.tel">
+        <div :class="{ 'invalid-feedback' : getErrorMessage('tel') }">{{getErrorMessage('tel')}}</div>
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label class="col-sm-2 col-form-label">ロール <span class="badge badge-danger">必須</span></label>
       <div class="col-sm-10">
         <select class="form-control" :class="{ 'is-invalid' : getErrorMessage('role') }" v-model="customer.role.id">

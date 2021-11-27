@@ -3,9 +3,31 @@
     <div class="row">
       <div class="col">
         <h1>顧客管理</h1>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="col">
+        <input type="radio" id="name" value="name" v-model="searchCondition.mode">
+        <label for="name">顧客名で検索</label>
+        <br>
+        <input type="radio" id="tel" value="tel" v-model="searchCondition.mode">
+        <label for="tel">電話番号で検索</label>
+        <br>
+        <input v-show="searchCondition.mode == 'name'" type="text" v-model="searchCondition.name">
+        <input v-show="searchCondition.mode == 'tel'" type="text" v-model="searchCondition.tel">
+        <button class="btn btn-primary" @click="search()">検索</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
         <router-link class="btn btn-primary" to="/customer/create">新規登録</router-link>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="col">
         <table class="table table-bordered table-hover">
           <thead class="thead-dark">
             <tr>
@@ -26,6 +48,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
 
   // **************************************************************************
@@ -33,6 +57,17 @@ export default {
   // **************************************************************************
   mounted: function() {
     this.getCustomers()
+  },
+
+  // **************************************************************************
+  // * データ
+  // **************************************************************************
+  data: function() {
+    return {
+      searchCondition: {
+        mode: "name",
+      },
+    }
   },
 
   // **************************************************************************
@@ -50,6 +85,24 @@ export default {
       set (value) {
         this.$store.commit('setCustomers', value)
       }
+    },
+
+  },
+
+  // **************************************************************************
+  // * メソッド
+  // **************************************************************************
+  methods: {
+
+    // ========================================================================
+    // 検索
+    // ========================================================================
+    search: async function() {
+
+      await axios.get('customers/search', { params:this.searchCondition })
+      .then(response => {
+        this.customers = response.data
+      })
     },
   },
 };

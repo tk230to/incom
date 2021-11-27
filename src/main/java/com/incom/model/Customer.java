@@ -42,6 +42,9 @@ public class Customer {
     @NotBlank
     private String email;
 
+    /** 電話番号 */
+    private String tel;
+
     /** 名前 */
     @NotNull
     @NotBlank
