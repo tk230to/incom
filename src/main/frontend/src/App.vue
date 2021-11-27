@@ -11,8 +11,8 @@
             <b-nav-item active-class="active" to="/about">初めての方へ</b-nav-item>
             <b-nav-item active-class="active" to="/rental">レンタルする</b-nav-item>
             <b-nav-item active-class="active" to="/buy">購入する</b-nav-item>
-            <b-nav-item active-class="active" to="/item">商品管理</b-nav-item>
-            <b-nav-item active-class="active" to="/customer">顧客管理</b-nav-item>
+            <b-nav-item v-if="isAdmin()" active-class="active" to="/item">商品管理</b-nav-item>
+            <b-nav-item v-if="isAdmin() || isSales()" active-class="active" to="/customer">顧客管理</b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">

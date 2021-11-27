@@ -176,5 +176,31 @@ export default {
       })
       this.customers = customers
     },
+
+    // ========================================================================
+    // 管理者判定
+    // ========================================================================
+    isAdmin: function() {
+      if (!this.user.role) {
+        return false
+      }
+      if (this.user.role.authority == "ROLE_ADMIN") {
+        return true
+      }
+      return false
+    },
+
+    // ========================================================================
+    // 営業担当判定
+    // ========================================================================
+    isSales: function() {
+      if (!this.user.role) {
+        return false
+      }
+      if (this.user.role.authority == "ROLE_SALES") {
+        return true
+      }
+      return false
+    },
   }
 }
